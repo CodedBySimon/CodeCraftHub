@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: user-service-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  user-service:
+    build: .
+    container_name: user-service
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/users
+      - JWT_SECRET=your_jwt_secret_key
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
